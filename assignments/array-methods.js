@@ -57,29 +57,112 @@ const runners = [
 
 // ==== Challenge 1: Use .forEach() ====
 // The event director needs both the first and last names of each runner for their running bibs. Combine both the first and last names and populate a new array called `fullNames`. This array will contain just strings.
+
 let fullNames = [];
+let count = 0;
+
+runners.forEach(function(id){
+
+  fullNames.push((count+1) +' '+ id.first_name+' '+id.last_name );
+  count++;
+})
+
 console.log(fullNames);
 
 // ==== Challenge 2: Use .map() ====
 // The event director needs to have all the runners' first names in uppercase because the director BECAME DRUNK WITH POWER. Populate an array called `firstNamesAllCaps`. This array will contain just strings.
+
 let firstNamesAllCaps = [];
+
+firstNamesAllCaps = runners.map((caps)=>{
+  return caps.first_name.toUpperCase();
+
+});
+
 console.log(firstNamesAllCaps);
 
 // ==== Challenge 3: Use .filter() ====
 // The large shirts won't be available for the event due to an ordering issue. We need a filtered version of the runners array, containing only those runners with large sized shirts so they can choose a different size. This will be an array of objects.
 let runnersLargeSizeShirt = [];
+
+runnersLargeSizeShirt = runners.filter((select) =>{
+
+  return select.shirt_size === 'L';
+});
+
 console.log(runnersLargeSizeShirt);
 
 // ==== Challenge 4: Use .reduce() ====
 // The donations need to be tallied up and reported for tax purposes. Add up all the donations and save the total into a ticketPriceTotal variable.
 let ticketPriceTotal = 0;
+
+ticketPriceTotal = runners.reduce((total, donate) =>{
+
+  return total += donate.donation;
+}, 0);
+
 console.log(ticketPriceTotal);
 
 // ==== Challenge 5: Be Creative ====
 // Now that you have used .forEach(), .map(), .filter(), and .reduce().  I want you to think of potential problems you could solve given the data set and the 5k fun run theme.  Try to create and then solve 3 unique problems using one or many of the array methods listed above.
 
-// Problem 1
+// Problem 1: Select just the companies with participating employees so we can see who to credit.
+let companyNames = [];
 
-// Problem 2
+companyNames = runners.map((select) =>{
+  return select.company_name;
 
-// Problem 3
+})
+
+console.log(companyNames);
+
+// Problem 2: using the previous data reduce the list so it only contains one instance of each company.
+let companyNamesFinal = [];
+count = 0;
+
+companyNames.forEach(function(findCompany){   //look through the original array at all the names so we can compare them to what we have already(companyNamesFinal);
+
+    companyNamesFinal.forEach(function(checkCompany){ //check what we have specifically already
+
+      if(findCompany === checkCompany){ //we found a match with what we have so lets count it so we can ignore adding it to the final list
+        count++;
+      }
+
+    })
+
+    if (count === 0){ //we didnt find any after check them all so we should add it to the list
+      companyNamesFinal.push(findCompany);
+
+    }
+
+    count = 0; //reset our count so our checks will be accurate
+
+})
+
+console.log(companyNamesFinal.sort()); //push the final results and sort them so it's easier to tell if we have a mistake.
+
+
+// Problem 3: Figure out the donations based on company.
+let companyDonations = [];
+let donationFilter = [];
+let donationTotal = 0; //will be used to total up the specified company donation.
+
+
+companyNamesFinal.forEach(function(findCompany){   //look through the original array at all the names so we can compare them to what we have already(companyNamesFinal);
+
+    donationFilter = runners.filter((select) =>{ //make a new array we can reduce
+      return select.company_name === findCompany;
+    });
+
+    donationTotal = donationFilter.reduce((total, donate) =>{ //add all the donations together
+
+      return total += donate.donation;
+    }, 0);
+
+    companyDonations.push({company_name:findCompany, donation:donationTotal}); //add those results to the total array
+
+    donationFilter = []; //empty the filter so it will work next time.
+
+});
+
+console.log(companyDonations);
